@@ -22,20 +22,29 @@
   </form>
 </template>
 <script>
-import { get } from '../api'
+import { Cat } from '../api'
 export default {
   data: () => ({
     catUrl: '',
     title: ''
   }),
   created () {
-    get((url) => {
+    Cat.get((url) => {
       this.catUrl = url
     })
   },
   methods: {
     postCat () {
-
+      const catInfo = {
+        'url': this.catUrl,
+        'comment': this.title,
+        'info': 'Posted by Charles on Tuesday',
+        'created_at': -1 * new Date().getTime()
+      }
+      Cat.post(catInfo)
+        .then(() => {
+          this.$router.push('/')
+        })
     }
   }
 }
