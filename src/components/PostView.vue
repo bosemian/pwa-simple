@@ -3,13 +3,13 @@
     <div class="mdl-grid">
       <div class="mdl-cell mdl-cell--8-col">
         <div class="card-image__picture spinner-center">
-          <img class="img-post" v-if="catUrl" :src="catUrl" />
-          <div v-else="catUrl"class="mdl-spinner mdl-js-spinner is-active"></div>
+          <img class="img-post" v-if="catInfo.catUrl" :src="catInfo.catUrl" />
+          <div v-if="loading" class="mdl-spinner mdl-js-spinner is-active"></div>
         </div>
       </div>
       <div class="mdl-cell mdl-cell--4-col mdl-cell--8-col-tablet">
         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label is-upgraded is-dirty">
-          <input id="username" v-model="title" type="text" class="mdl-textfield__input"/>
+          <input id="username" v-model="catInfo.title" type="text" class="mdl-textfield__input"/>
           <label for="username" class="mdl-textfield__label">Describe me</label>
         </div>
         <div class="actions">
@@ -25,26 +25,24 @@
 import { Cat } from '../services'
 export default {
   data: () => ({
-    catUrl: '',
-    title: ''
+    catInfo: {
+      catUrl: '',
+      title: ''
+    },
+    loading: false
   }),
 
   subscriptions () {
-    console.log('subscribe')
+    this.loading = true
     Cat.loadCat((url) => {
-      this.catUrl = url
+      this.loading = false
+      this.catInfo.catUrl = url
     })
   },
 
   methods: {
     postCat () {
-      const catInfo = {
-        'url': this.catUrl,
-        'comment': this.title,
-        'info': 'Posted by Charles on Tuesday',
-        'created_at': -1 * new Date().getTime()
-      }
-      Cat.post(catInfo)
+      Cat.post(this.catInfo)
         .then(() => {
           this.$router.push('/')
         })

@@ -3,7 +3,7 @@
     <div class="mdl-grid">
       <div class="mdl-cell mdl-cell--3-col mdl-cell mdl-cell--1-col-tablet mdl-cell--hide-phone"></div>
       <div class="mdl-cell mdl-cell--6-col mdl-cell--4-col-phone spinner-center">
-        <div v-if="pictures" v-for="picture in this.pictures" class="image-card" @click="displayDetails(picture.id)">
+        <div v-if="pictures" v-for="picture in pictures" class="image-card" @click="displayDetails(picture.id)">
           <div class="image-card__picture">
             <img v-if="pictures" :src="picture.url" />
           </div>
@@ -32,7 +32,6 @@ export default {
     this.loading = true
     Cat.list()
       .subscribe((res) => {
-        console.log(res)
         this.pictures = res
         this.loading = false
       })
@@ -40,7 +39,6 @@ export default {
 
   methods: {
     displayDetails (id) {
-      console.log(id)
       this.$router.push(`detail/${id}`)
     }
   }

@@ -1,13 +1,16 @@
 import firebase from 'firebase'
 import { Observable } from 'rxjs'
+import _ from 'lodash'
+
+const refPath = (path) => firebase.database().ref(path)
 
 const post = (path, postCat) => {
   return firebase.database().ref(`${path}`).push(postCat)
 }
 
-const onArrayValue = () => {
+const onArrayValue = (ref) => {
   return Observable.create((obs) => {
-    const ref = firebase.database().ref('cat')
+    ref = _.isString(ref) ? refPath(ref) : ref
     const fn = ref.on('value', (snapshots) => {
       const result = []
       snapshots.forEach((snap) => {
@@ -23,9 +26,9 @@ const onArrayValue = () => {
   })
 }
 
-const onValueId = (id) => {
+const onValueId = (ref) => {
   return Observable.create((obs) => {
-    const ref = firebase.database().ref(`cat/${id}`)
+    ref = _.isString(ref) ? refPath(ref) : ref
     const fn = ref.on('value', (snapshot) => {
       obs.next(snapshot.val())
     }, (err) => {
@@ -35,8 +38,13 @@ const onValueId = (id) => {
   })
 }
 
+const timestamp = () => {
+  return firebase.database.ServerValue.TIMESTAMP
+}
+
 export default {
   post,
   onArrayValue,
-  onValueId
+  onValueId,
+  timestamp
 }
