@@ -3,7 +3,7 @@
     <div class="mdl-grid">
       <div class="mdl-cell mdl-cell--8-col">
         <div class="card-image__picture spinner-center">
-          <img class="img-post" v-if="catUrl" :src="this.catUrl" />
+          <img class="img-post" v-if="catUrl" :src="catUrl" />
           <div v-else="catUrl"class="mdl-spinner mdl-js-spinner is-active"></div>
         </div>
       </div>
@@ -22,17 +22,20 @@
   </form>
 </template>
 <script>
-import { Cat } from '../api'
+import { Cat } from '../services'
 export default {
   data: () => ({
     catUrl: '',
     title: ''
   }),
-  created () {
-    Cat.get((url) => {
+
+  subscriptions () {
+    console.log('subscribe')
+    Cat.loadCat((url) => {
       this.catUrl = url
     })
   },
+
   methods: {
     postCat () {
       const catInfo = {
@@ -52,8 +55,5 @@ export default {
 <style scoped>
  .img-post {
    max-width: 100%;
- }
- .spinner-center {
-   text-align: center
  }
 </style>

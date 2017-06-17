@@ -8,7 +8,7 @@ const http = axios.create({
   baseURL: API_URL
 })
 
-const get = (cb) => {
+const loadCat = (cb) => {
   http.get()
     .then((res) => {
       cb(parse(res.data).root.children['0'].children['0'].children['0'].children['0'].content)
@@ -22,7 +22,17 @@ const post = (catInfo) => {
   return $firebase.post('cat', catInfo)
 }
 
+const list = () => {
+  return $firebase.onArrayValue()
+}
+
+const get = (id) => {
+  return $firebase.onValueId(id)
+}
+
 export default {
   get,
-  post
+  post,
+  list,
+  loadCat
 }

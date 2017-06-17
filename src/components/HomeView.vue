@@ -2,15 +2,16 @@
   <div>
     <div class="mdl-grid">
       <div class="mdl-cell mdl-cell--3-col mdl-cell mdl-cell--1-col-tablet mdl-cell--hide-phone"></div>
-      <div class="mdl-cell mdl-cell--6-col mdl-cell--4-col-phone">
+      <div class="mdl-cell mdl-cell--6-col mdl-cell--4-col-phone spinner-center">
         <div v-if="pictures" v-for="picture in this.pictures" class="image-card" @click="displayDetails(picture.id)">
           <div class="image-card__picture">
-            <img :src="picture.url" />
+            <img v-if="pictures" :src="picture.url" />
           </div>
           <div class="image-card__comment mdl-card__actions">
             <span>{{ picture.comment }}</span>
           </div>
         </div>
+        <div v-if="loading" class="mdl-spinner mdl-js-spinner is-active"></div>
       </div>
     </div>
     <router-link class="add-picture-button mdl-button mdl-js-button mdl-button--fab mdl-button--colored" to="/post">
@@ -19,13 +20,27 @@
   </div>
 </template>
 <script>
-import data from '../data'
+import { Cat } from '../services'
 export default {
+
   data: () => ({
-    pictures: data.pictures
+    pictures: null,
+    loading: false
   }),
+
+  subscriptions () {
+    this.loading = true
+    Cat.list()
+      .subscribe((res) => {
+        console.log(res)
+        this.pictures = res
+        this.loading = false
+      })
+  },
+
   methods: {
     displayDetails (id) {
+      console.log(id)
       this.$router.push(`detail/${id}`)
     }
   }

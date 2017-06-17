@@ -34,4 +34,7 @@ export default {
 
 <style>
   @import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+  .spinner-center {
+    text-align: center
+  }
 </style>

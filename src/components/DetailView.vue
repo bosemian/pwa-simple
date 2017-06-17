@@ -1,31 +1,47 @@
 <template>
-   <div class="mdl-grid">
-    <div class="mdl-cell mdl-cell--8-col">
-      <div class="picture">
-        <img :src="this.pictures[$route.params.id].url" />
+   <div>
+    <div v-if="picture" class="mdl-grid">
+      <div class="mdl-cell mdl-cell--8-col">
+        <div class="picture">
+          <img :src="picture.url" />
+        </div>
+        <div class="info">
+          <span>{{ picture.info }}</span>
+        </div>
       </div>
-      <div class="info">
-        <span>{{ this.pictures[$route.params.id].info }}</span>
+      <div class="mdl-cell mdl-cell--4-col mdl-cell--8-col-tablet">
+        <div class="comment">
+          <span>{{ picture.comment }}</span>
+        </div>
+        <div class="actions">
+          <router-link class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" to="/post">
+            ANSWER
+          </router-link>
+        </div>
       </div>
     </div>
-    <div class="mdl-cell mdl-cell--4-col mdl-cell--8-col-tablet">
-      <div class="comment">
-        <span>{{ this.pictures[$route.params.id].comment }}</span>
-      </div>
-      <div class="actions">
-        <router-link class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" to="/post">
-          ANSWER
-        </router-link>
-      </div>
+    <div  class="spinner-center">
+      <div v-if="loading" class="mdl-spinner mdl-js-spinner is-active"></div>
     </div>
-  </div>
+   </div>
 </template>
 <script>
-import data from '../data'
+import { Cat } from '../services'
 export default {
   data: () => ({
-    pictures: data.pictures
-  })
+    picture: null,
+    loading: false
+  }),
+
+  subscriptions () {
+    const id = this.$route.params.id
+    this.loading = true
+    Cat.get(id)
+      .subscribe((res) => {
+        this.picture = res
+        this.loading = false
+      })
+  }
 }
 </script>
 <style scoped>
