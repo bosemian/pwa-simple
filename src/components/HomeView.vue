@@ -5,10 +5,10 @@
       <div class="mdl-cell mdl-cell--6-col mdl-cell--4-col-phone spinner-center">
         <div v-if="pictures" v-for="picture in pictures" class="image-card" @click="displayDetails(picture.id)">
           <div class="image-card__picture">
-            <img v-if="pictures" :src="picture.url" />
+            <img v-if="pictures" :src="picture.catUrl" >
           </div>
           <div class="image-card__comment mdl-card__actions">
-            <span>{{ picture.comment }}</span>
+            <span>{{ picture.title }}</span>
           </div>
         </div>
         <div v-if="loading" class="mdl-spinner mdl-js-spinner is-active"></div>
@@ -25,22 +25,44 @@ export default {
 
   data: () => ({
     pictures: null,
-    loading: false
+    loading: false,
+    cat: null
   }),
 
   subscriptions () {
     this.loading = true
-    Cat.list()
-      .subscribe((res) => {
-        this.pictures = res
-        this.loading = false
-      })
+    if (navigator.onLine) {
+      this.cat = Cat.list()
+        .subscribe((res) => {
+          this.pictures = res
+          this.saveCatsToCache()
+          this.loading = false
+        })
+      return
+    } else {
+      this.loading = false
+      this.pictures = JSON.parse(localStorage.getItem('cats'))
+      return
+    }
   },
-
   methods: {
     displayDetails (id) {
       this.$router.push(`detail/${id}`)
+    },
+    getCats () {
+      if (navigator.onLine) {
+        this.saveCatsToCache()
+        return
+      } else {
+        return JSON.parse(localStorage.getItem('cats'))
+      }
+    },
+    saveCatsToCache () {
+      localStorage.setItem('cats', JSON.stringify(this.pictures))
     }
+  },
+  beforeDestroy () {
+    this.cat.unsubscribe()
   }
 }
 </script>

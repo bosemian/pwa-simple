@@ -3,13 +3,13 @@
     <div class="mdl-grid">
       <div class="mdl-cell mdl-cell--8-col">
         <div class="card-image__picture spinner-center">
-          <img class="img-post" v-if="catInfo.catUrl" :src="catInfo.catUrl" />
+          <img class="img-post" v-if="catInfo.catUrl" :src="catInfo.catUrl" >
           <div v-if="loading" class="mdl-spinner mdl-js-spinner is-active"></div>
         </div>
       </div>
       <div class="mdl-cell mdl-cell--4-col mdl-cell--8-col-tablet">
         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label is-upgraded is-dirty">
-          <input id="username" v-model="catInfo.title" type="text" class="mdl-textfield__input"/>
+          <input id="username" v-model="catInfo.title" type="text" class="mdl-textfield__input" >
           <label for="username" class="mdl-textfield__label">Describe me</label>
         </div>
         <div class="actions">
@@ -42,8 +42,8 @@ export default {
 
   methods: {
     postCat () {
-      Cat.post(this.catInfo)
-        .then(() => {
+      Cat.push(this.catInfo)
+        .subscribe(() => {
           this.$router.push('/')
         })
     }

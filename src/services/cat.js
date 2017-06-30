@@ -19,10 +19,10 @@ const loadCat = (cb) => {
     })
 }
 
-const post = ({ url, comment }) => {
-  return $firebase.post('cat', {
-    url,
-    comment,
+const push = ({ catUrl, title }) => {
+  return $firebase.push('cat', {
+    catUrl,
+    title,
     'info': 'Posted by SpeedBoy',
     'created_at': $firebase.timestamp()
   })
@@ -33,12 +33,12 @@ const list = () => {
 }
 
 const get = (id) => {
-  return $firebase.onValueId(`cat/${id}`)
+  return $firebase.onceValue(`cat/${id}`)
 }
 
 export default {
   get,
-  post,
+  push,
   list,
   loadCat
 }

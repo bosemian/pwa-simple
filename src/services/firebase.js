@@ -4,8 +4,8 @@ import _ from 'lodash'
 
 const refPath = (path) => firebase.database().ref(path)
 
-const post = (path, postCat) => {
-  return firebase.database().ref(`${path}`).push(postCat)
+const push = (path, postCat) => {
+  return Observable.fromPromise(firebase.database().ref(`${path}`).push(postCat))
 }
 
 const onArrayValue = (ref) => {
@@ -26,25 +26,19 @@ const onArrayValue = (ref) => {
   })
 }
 
-const onValueId = (ref) => {
-  return Observable.create((obs) => {
-    ref = _.isString(ref) ? refPath(ref) : ref
-    const fn = ref.on('value', (snapshot) => {
-      obs.next(snapshot.val())
-    }, (err) => {
-      obs.error(err)
-    })
-    return () => { ref.off('value', fn) }
-  })
-}
-
 const timestamp = () => {
   return firebase.database.ServerValue.TIMESTAMP
 }
 
+const onceValue = (ref) => {
+  ref = _.isString(ref) ? refPath(ref) : ref
+  return Observable.fromPromise(ref.once('value'))
+    .map((snapshots) => snapshots.val())
+}
+
 export default {
-  post,
+  push,
   onArrayValue,
-  onValueId,
+  onceValue,
   timestamp
 }
